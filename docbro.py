@@ -2,6 +2,7 @@ import argparse
 import shutil
 import os
 import markdown
+from toc import TreeGenerate
 
 baseURL = os.environ.get('BASE_URL', 'https://aadarsh-ram.github.io/delta-hack-23/')
 project_name = os.environ.get('PROJECT_NAME', 'Sample Project')
@@ -196,6 +197,7 @@ class Docbro:
                     # Generate markdown
                     markdown_content = self.generate_markdown(docstrings)
                     converted_html = markdown.markdown(markdown_content, extensions=['extra', 'smarty'], output_format='html5')
+                    # Generate html
                     final_html = TEMPLATE.replace('{{content}}', converted_html)
                     file_object = open(os.path.join(new_root, file + '.html'), 'w')
                     file_object.write(final_html)
@@ -208,21 +210,23 @@ class Docbro:
         """
         Create an index.html file for the project
         """
-        index = open(os.path.join(output_path, 'index.html'), 'w')
-        content = []
-        content.append('<html><body>')
-        content.append('<h1>Documentation for {}</h1>'.format(project_name))
-        for root, dirs, files in os.walk(output_path+project_name, topdown=True):
-            content.append('<h2>{}</h2>'.format(root[len(output_path):]))
-            content.append('<ul>')
-            for file in files:
-                if file.endswith('.html'):
-                    content.append(f'<li><a href="{os.path.join(root[len(output_path):], file)}">{file[:-5]}</a></li>')
-            content.append('</ul>')
-        content.append('</body></html>')
-        html = TEMPLATE.replace('{{content}}', '\n'.join(content))
-        index.write(html)
-        index.close()
+        project_dir = output_path+project_name
+
+        # Generate the table of contents markdown
+        tree_gen = TreeGenerate(root=output_path)
+        toc_md = '\n'.join(tree_gen.generate_toc(project_dir))
+
+        # Generate the table of contents html
+        toc_html = markdown.markdown(toc_md, extensions=['extra', 'smarty'], output_format='html5')
+        header = ['<h1>Documentation for {}</h1>\n'.format(project_name)]
+        header.append('<h2>📁 / </h2>\n')
+        toc_html = '\n'.join(header) + toc_html
+        final_html = TEMPLATE.replace('{{content}}', toc_html)
+
+        # Write the index.html file
+        file_object = open(os.path.join(output_path, 'index.html'), 'w')
+        file_object.write(final_html)
+        file_object.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Docbro is a tool for generating documentation from docstrings in Python')
