@@ -11,6 +11,11 @@ on:
   # Run manually
   workflow_dispatch:
 
+# Disallow one concurrent deployment
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   generate-site:
     runs-on: ubuntu-latest
