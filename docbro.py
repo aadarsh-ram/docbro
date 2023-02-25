@@ -29,7 +29,7 @@ TEMPLATE = f"""<!DOCTYPE html>
 <body>
 <div class="container">
 {{content}}
-<a href="/index.html">Back to root directory</a>
+<a href="index.html">Back to root directory</a>
 </div>
 </body>
 </html>
