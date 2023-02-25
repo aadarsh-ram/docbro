@@ -161,7 +161,7 @@ class Docbro:
                     markdown_content = self.generate_markdown(docstrings)
                     html = markdown.markdown(markdown_content, extensions=['extra', 'smarty'], output_format='html5')
                     doc = TEMPLATE.replace('{{content}}', html)
-                    f = open(os.path.join(new_root, file.split('.')[0] + '.html'), 'w')
+                    f = open(os.path.join(new_root, file + '.html'), 'w')
                     f.write(doc)
                     f.close()
         
@@ -181,7 +181,7 @@ class Docbro:
             content.append('<ul>')
             for file in files:
                 if file.endswith('.html'):
-                    content.append(f'<li><a href="{os.path.join(root[len(output_path):], file)}">{file}</a></li>')
+                    content.append(f'<li><a href="{os.path.join(root[len(output_path):], file)}">{file[:-5]}</a></li>')
             content.append('</ul>')
         content.append('</body></html>')
         html = TEMPLATE.replace('{{content}}', '\n'.join(content))
