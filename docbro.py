@@ -4,6 +4,7 @@ import os
 import markdown
 
 baseURL = os.environ.get('BASE_URL', 'https://aadarsh-ram.github.io/delta-hack-23/')
+project_name = os.environ.get('PROJECT_NAME', 'Sample Project')
 TEMPLATE = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -137,7 +138,6 @@ class Docbro:
             shutil.rmtree('docs')
         os.makedirs('docs')
 
-        project_name = os.path.basename(os.path.normpath(project_path))
         if os.path.exists(f'docs/{project_name}'):
             os.remove(f'docs/{project_name}')
         os.makedirs(f'docs/{project_name}')
