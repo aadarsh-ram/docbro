@@ -1,0 +1,37 @@
+name: generate-site
+
+# Only run this when main branch changes
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/**
+
+jobs:
+  generate-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Install Python
+      - name: Setup Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+      
+      - name: Install Python dependencies
+        run: |
+          python -m pip install -U pip
+          python -m pip install -r requirements.txt
+      
+      - name: Build site using Docbro
+        run: |
+          python docbro.py src/
+      
+      - name: Github Pages Action
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/
