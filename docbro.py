@@ -7,7 +7,7 @@ baseURL = os.environ.get('BASE_URL', 'https://aadarsh-ram.github.io/delta-hack-2
 TEMPLATE = f"""<!DOCTYPE html>
 <html>
 <head>
-    <base href="{baseURL}" target="_blank">
+    <base href="{baseURL}">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="referrer" content="no-referrer" />
     <meta name="referrer" content="unsafe-url" />
