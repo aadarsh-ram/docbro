@@ -26,6 +26,7 @@ TEMPLATE = """<!DOCTYPE html>
 <body>
 <div class="container">
 {{content}}
+<a href="/index.html">Back to root directory</a>
 </div>
 </body>
 </html>
@@ -133,6 +134,11 @@ class Docbro:
             shutil.rmtree('docbro_output')
         os.makedirs('docbro_output')
 
+        project_name = os.path.basename(os.path.normpath(project_path))
+        if os.path.exists(f'docbro_output/{project_name}'):
+            os.remove(f'docbro_output/{project_name}')
+        os.makedirs(f'docbro_output/{project_name}')
+
         for root, dirs, files in os.walk(project_path, topdown=True):
             # Ignore directories and files
             exclude_dirs = open('.ignoredirs').readlines()
@@ -141,7 +147,7 @@ class Docbro:
             files[:] = [f for f in files if f not in exclude_files]
 
             # Create directories
-            new_root = os.path.join('docbro_output', root[len(project_path):])
+            new_root = os.path.join(f'docbro_output/{project_name}', root[len(project_path):])
             if not os.path.exists(new_root):
                 os.makedirs(new_root)
 
@@ -155,13 +161,29 @@ class Docbro:
                     f = open(os.path.join(new_root, file.split('.')[0] + '.html'), 'w')
                     f.write(doc)
                     f.close()
+        
+        self.create_index(f'docbro_output/', project_name)
         return 'Docbro has generated documentation for your project!'
     
-    def create_index(self, project_path):
+    def create_index(self, output_path, project_name):
         """
         Create an index.html file for the project
         """
-        index = open(os.path.join(project_path, 'index.html'), 'w')
+        index = open(os.path.join(output_path, 'index.html'), 'w')
+        content = []
+        content.append('<html><body>')
+        content.append('<h1>Documentation for {}</h1>'.format(project_name))
+        for root, dirs, files in os.walk(output_path+project_name, topdown=True):
+            content.append('<h2>{}</h2>'.format(root[len(output_path):]))
+            content.append('<ul>')
+            for file in files:
+                if file.endswith('.html'):
+                    content.append(f'<li><a href="{os.path.join(root[len(output_path):], file)}">{file}</a></li>')
+            content.append('</ul>')
+        content.append('</body></html>')
+        html = TEMPLATE.replace('{{content}}', '\n'.join(content))
+        index.write(html)
+        index.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Docbro is a tool for generating documentation from docstrings in Python')
