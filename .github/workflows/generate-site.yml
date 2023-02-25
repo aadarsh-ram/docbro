@@ -40,9 +40,23 @@ jobs:
         run: |
           python docbro.py src/
       
-      - name: Github Pages Action
+      - name: Github Pages Action for Project
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.ACCESS_TOKEN }}
           publish_dir: ./docs/
           destination_dir: ${{ steps.dotenv.outputs.version }}
+      
+      - name: Build versions index.html
+        env:
+          GITHUB_USERNAME: ${{ steps.dotenv.outputs.github_username }}
+          GITHUB_REPO: ${{ steps.dotenv.outputs.github_repo }}
+        run: |
+          python generate_version_html.py
+        
+      - name: Github Pages Action for Versions
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+          publish_dir: ./top-level/
+          keep_files: true

@@ -17,7 +17,7 @@ TEMPLATE = f"""
     <meta name="referrer" content="origin" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
     <meta name="referrer" content="origin-when-cross-origin" />
-    <title>Page Title</title>
+    <title>{project_name}</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     """ + """
     <style>
