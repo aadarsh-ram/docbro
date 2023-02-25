@@ -1,0 +1,9 @@
+.gitignore
+requirements.txt
+setup.py
+README.md
+.env
+yarn.lock
+package.json
+webpack.config.js
+webpack-stats.json
