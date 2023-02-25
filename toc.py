@@ -29,6 +29,8 @@ class TreeGenerate():
         file_link = (full_path.replace(self.root, ''))
         if file_link.startswith('/'):
             file_link = file_link[1:]
+        if file_link.endswith('/'):
+            file_link = file_link[:-1]
         return ('\t' * level) + '- [%s](%s)' % (file_root, request.pathname2url(file_link))
 
     def generate_toc(self, path = '.', level = 0):
