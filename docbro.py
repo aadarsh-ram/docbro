@@ -3,9 +3,11 @@ import shutil
 import os
 import markdown
 
-TEMPLATE = """<!DOCTYPE html>
+baseURL = os.environ.get('BASE_URL', 'https://aadarsh-ram.github.io/delta-hack-23/')
+TEMPLATE = f"""<!DOCTYPE html>
 <html>
 <head>
+    <base href="{baseURL}" target="_blank">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="referrer" content="no-referrer" />
     <meta name="referrer" content="unsafe-url" />
@@ -13,7 +15,8 @@ TEMPLATE = """<!DOCTYPE html>
     <meta name="referrer" content="no-referrer-when-downgrade" />
     <meta name="referrer" content="origin-when-cross-origin" />
     <title>Page Title</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">\n
+    """ + """
     <style>
         body {
             font-family: Helvetica,Arial,sans-serif;
