@@ -7,8 +7,9 @@ on:
       - main
     paths:
       - src/**
-    
-    workflow_dispatch:
+  
+  # Run manually
+  workflow_dispatch:
 
 jobs:
   generate-site:
