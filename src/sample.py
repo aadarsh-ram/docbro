@@ -17,6 +17,15 @@ def add_two_nos(a, b):
     :param b: This is the second number
     :returns: The addition of first and second number
     :raises TypeError: The arguments must be numbers
+    :markdown_start:
+
+    ## This is a cool module
+    ### Really cool!
+    ```python
+    print('Hello World')
+    ```
+
+    :markdown_end:
 
     docbroend
     """

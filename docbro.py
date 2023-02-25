@@ -5,7 +5,8 @@ import markdown
 
 baseURL = os.environ.get('BASE_URL', 'https://aadarsh-ram.github.io/delta-hack-23/')
 project_name = os.environ.get('PROJECT_NAME', 'Sample Project')
-TEMPLATE = f"""<!DOCTYPE html>
+TEMPLATE = f"""
+<!DOCTYPE html>
 <html>
 <head>
     <base href="{baseURL}">
@@ -25,10 +26,15 @@ TEMPLATE = f"""<!DOCTYPE html>
         code, pre {
             font-family: monospace;
         }
+        .container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
+<a href="index.html">Back to root directory</a>
 {{content}}
 <a href="index.html">Back to root directory</a>
 </div>
@@ -45,10 +51,13 @@ class Docbro:
         Parse a file and return a list of docstrings
         """
         docstrings = []
-        with open(filename, 'r') as f:
+        with open(filename, 'r') as project_file:
             curr_docstring = {}
+            docstring_md_content = []
             can_parse = False
-            for line in f:
+            can_parse_md = False
+
+            for line in project_file:
                 line = line.strip()
 
                 # Check if we are in a docstring
@@ -61,29 +70,45 @@ class Docbro:
                     curr_docstring = {}
                     can_parse = False
                 
+                # Check if we are parsing markdown
+                elif line.startswith(':markdown_start:'):
+                    can_parse_md = True
+
+                # Check if we are at the end of markdown
+                elif line.startswith(':markdown_end:'):
+                    can_parse_md = False
+                    curr_docstring['markdown'] = "\n".join(docstring_md_content)
+                    docstring_md_content = []
+                
+                # Markdown doesn't need to be converted
+                elif can_parse_md:
+                    docstring_md_content.append(line)
+                
                 # Parse the docstring
                 elif can_parse:
                     if line: # Ignore empty lines
                         splitted = line.split(':')
+                        doc_type = splitted[1]
+                        doc_value = splitted[2]
 
                         # Parse name, description, returns
-                        if splitted[1] in ['name', 'description', 'returns']:
-                            curr_docstring[splitted[1]] = splitted[2].strip()
+                        if doc_type in ['name', 'description', 'returns']:
+                            curr_docstring[doc_type] = doc_value.strip()
                         
                         # Parse params and raises
-                        elif splitted[1].split()[0] == 'param':
+                        elif doc_type.split()[0] == 'param':
                             param_object = {}
-                            param_object['name'] = splitted[1].split()[1]
-                            param_object['description'] = splitted[2].strip()
+                            param_object['name'] = doc_type.split()[1]
+                            param_object['description'] = doc_value.strip()
                             if curr_docstring.get('params', -1) != -1:
                                 curr_docstring['params'].append(param_object)
                             else:
                                 curr_docstring['params'] = [param_object]
                         
-                        elif splitted[1].split()[0] == 'raises':
+                        elif doc_type.split()[0] == 'raises':
                             raise_object = {}
-                            raise_object['type'] = splitted[1].split()[1]
-                            raise_object['description'] = splitted[2].strip()
+                            raise_object['type'] = doc_type.split()[1]
+                            raise_object['description'] = doc_value.strip()
                             if curr_docstring.get('raises', -1) != -1:
                                 curr_docstring['raises'].append(raise_object)
                             else:
@@ -99,12 +124,23 @@ class Docbro:
         markdown_output.append('# {}'.format(start_docstring['name']))
         markdown_output.append('## Description')
         markdown_output.append(start_docstring['description'])
+
+        # Add markdown if provided
+        if start_docstring.get('markdown', {}) != {}:
+            markdown_output.append('#### Markdown Content')
+            markdown_output.append(start_docstring['markdown'])
+        
         markdown_output.append('## Functions')
 
         for docstring in docstrings[1:]:
             markdown_output.append('### `{}`'.format(docstring['name']))
             markdown_output.append(docstring.get('description', 'No description provided'))
 
+            # Add markdown if provided
+            if docstring.get('markdown', {}) != {}:
+                markdown_output.append('#### Markdown Content')
+                markdown_output.append(docstring['markdown'])
+            
             # Generate markdown for params
             markdown_output.append('#### Parameters')
             if docstring.get('params', {}) == {}:
@@ -159,11 +195,11 @@ class Docbro:
                 if docstrings:
                     # Generate markdown
                     markdown_content = self.generate_markdown(docstrings)
-                    html = markdown.markdown(markdown_content, extensions=['extra', 'smarty'], output_format='html5')
-                    doc = TEMPLATE.replace('{{content}}', html)
-                    f = open(os.path.join(new_root, file + '.html'), 'w')
-                    f.write(doc)
-                    f.close()
+                    converted_html = markdown.markdown(markdown_content, extensions=['extra', 'smarty'], output_format='html5')
+                    final_html = TEMPLATE.replace('{{content}}', converted_html)
+                    file_object = open(os.path.join(new_root, file + '.html'), 'w')
+                    file_object.write(final_html)
+                    file_object.close()
         
         self.create_index(f'docs/', project_name)
         return 'Docbro has generated documentation for your project!'
