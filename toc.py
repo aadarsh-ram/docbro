@@ -19,8 +19,8 @@ class TreeGenerate():
             return -1 if a < b else 1
         return -1 if left else 1
 
-    # Creates a line of text for a directory entry.
     def directory_line(self, file_name, level):
+        """Creates a line of text for a directory entry."""
         return ('\t' * level) + '- ' + ('### 📁 %s' % (file_name))
 
     def file_line(self, file_name, full_path, level):

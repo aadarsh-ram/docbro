@@ -23,6 +23,10 @@ TEMPLATE = f"""
     <style>
         body {
             font-family: Helvetica,Arial,sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         code, pre {
             font-family: monospace;
@@ -30,6 +34,11 @@ TEMPLATE = f"""
         .container {
             margin-top: 20px;
             margin-bottom: 20px;
+        }
+        footer {
+            background-color: #f5f5f5;
+            color: black;
+            text-align: center;
         }
     </style>
 </head>
@@ -39,6 +48,9 @@ TEMPLATE = f"""
 {{content}}
 <a href="index.html">Back to root directory</a>
 </div>
+<footer>
+    <h4> Made with 💛 by Aadarsh A</h4>
+</footer>
 </body>
 </html>
 """
@@ -171,10 +183,12 @@ class Docbro:
         """
         Parse a project and return a list of docstrings
         """
+        # Remove and create docs directory if it exists
         if os.path.exists('docs'):
             shutil.rmtree('docs')
         os.makedirs('docs')
 
+        # Remove and create project directory if it exists
         if os.path.exists(f'docs/{project_name}'):
             os.remove(f'docs/{project_name}')
         os.makedirs(f'docs/{project_name}')
