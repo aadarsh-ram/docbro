@@ -130,14 +130,14 @@ class Docbro:
         """
         Parse a project and return a list of docstrings
         """
-        if os.path.exists('docbro_output'):
-            shutil.rmtree('docbro_output')
-        os.makedirs('docbro_output')
+        if os.path.exists('docs'):
+            shutil.rmtree('docs')
+        os.makedirs('docs')
 
         project_name = os.path.basename(os.path.normpath(project_path))
-        if os.path.exists(f'docbro_output/{project_name}'):
-            os.remove(f'docbro_output/{project_name}')
-        os.makedirs(f'docbro_output/{project_name}')
+        if os.path.exists(f'docs/{project_name}'):
+            os.remove(f'docs/{project_name}')
+        os.makedirs(f'docs/{project_name}')
 
         for root, dirs, files in os.walk(project_path, topdown=True):
             # Ignore directories and files
@@ -147,7 +147,7 @@ class Docbro:
             files[:] = [f for f in files if f not in exclude_files]
 
             # Create directories
-            new_root = os.path.join(f'docbro_output/{project_name}', root[len(project_path):])
+            new_root = os.path.join(f'docs/{project_name}', root[len(project_path):])
             if not os.path.exists(new_root):
                 os.makedirs(new_root)
 
@@ -162,7 +162,7 @@ class Docbro:
                     f.write(doc)
                     f.close()
         
-        self.create_index(f'docbro_output/', project_name)
+        self.create_index(f'docs/', project_name)
         return 'Docbro has generated documentation for your project!'
     
     def create_index(self, output_path, project_name):
