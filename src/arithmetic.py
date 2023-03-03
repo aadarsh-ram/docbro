@@ -1,7 +1,7 @@
 """
 docbrostart
 
-:name: Arithmetic Operations
+:name: Arithmetic New Operations
 :description: This module contains functions for arithmetic operations
 
 docbroend
@@ -24,7 +24,7 @@ def add_two_nos(a, b):
     ```python
     print('Hello World')
     ```
-
+    [This is a link](www.google.com)
     :markdown_end:
 
     docbroend
