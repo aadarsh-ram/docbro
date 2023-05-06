@@ -26,9 +26,6 @@ docbroend
 """
 ```
 
-## Check it out!
-Visit [this link](https://aadarsh-ram.github.io/delta-hack-23/1.0.0/) to view a sample documentation website created by Docbro. The related project files, for which this site has been generated is present [here](https://github.com/aadarsh-ram/delta-hack-23/tree/main/src).
-
 ## Usage
 - Create and activate a new virtualenv
 ```
